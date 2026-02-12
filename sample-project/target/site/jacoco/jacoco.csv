@@ -1,5 +1,0 @@
-GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-Task Manager,com.example.taskmanager,TaskManager,0,154,0,10,0,38,0,18,0,13
-Task Manager,com.example.taskmanager,TaskStatus,0,21,0,0,0,4,0,1,0,1
-Task Manager,com.example.taskmanager,Task,4,168,3,23,0,41,3,25,0,15
-Task Manager,com.example.taskmanager,TaskValidator,3,47,0,14,1,11,1,10,1,3
