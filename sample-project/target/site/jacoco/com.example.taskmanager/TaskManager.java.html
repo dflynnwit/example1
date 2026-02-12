@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TaskManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Task Manager</a> &gt; <a href="index.source.html" class="el_package">com.example.taskmanager</a> &gt; <span class="el_source">TaskManager.java</span></div><h1>TaskManager.java</h1><pre class="source lang-java linenums">package com.example.taskmanager;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+/**
+ * Service class for managing tasks.
+ * 
+ * Implements CRUD operations for tasks following Agile user stories.
+ * Developed incrementally across Sprint 2.
+ */
+public class TaskManager {
+    
+    private final Map&lt;String, Task&gt; tasks;
+    private int nextId;
+    
+<span class="fc" id="L17">    public TaskManager() {</span>
+<span class="fc" id="L18">        this.tasks = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L19">        this.nextId = 1;</span>
+<span class="fc" id="L20">    }</span>
+    
+    /**
+     * Creates a new task.
+     * 
+     * User Story: US-007 - As a logged-in user, I want to create a new task,
+     * so that I can track things I need to do.
+     * 
+     * @param title Task title (required)
+     * @param description Task description (optional)
+     * @return The created task
+     * @throws IllegalArgumentException if title is invalid
+     */
+    public Task createTask(String title, String description) {
+<span class="fc" id="L34">        TaskValidator.validateTitle(title);</span>
+<span class="fc" id="L35">        TaskValidator.validateDescription(description);</span>
+        
+<span class="fc" id="L37">        String id = generateId();</span>
+<span class="fc" id="L38">        Task task = new Task(id, title, description);</span>
+<span class="fc" id="L39">        tasks.put(id, task);</span>
+        
+<span class="fc" id="L41">        return task;</span>
+    }
+    
+    /**
+     * Retrieves a task by its ID.
+     * 
+     * User Story: US-008 - As a logged-in user, I want to view all my tasks,
+     * so that I can see what I need to do.
+     * 
+     * @param id Task identifier
+     * @return The task, or null if not found
+     */
+    public Task getTask(String id) {
+<span class="fc" id="L54">        return tasks.get(id);</span>
+    }
+    
+    /**
+     * Retrieves all tasks.
+     * 
+     * User Story: US-008 - View Task List
+     * 
+     * @return List of all tasks
+     */
+    public List&lt;Task&gt; getAllTasks() {
+<span class="fc" id="L65">        return new ArrayList&lt;&gt;(tasks.values());</span>
+    }
+    
+    /**
+     * Retrieves tasks filtered by status.
+     * 
+     * @param status Status to filter by
+     * @return List of tasks with the specified status
+     */
+    public List&lt;Task&gt; getTasksByStatus(TaskStatus status) {
+<span class="fc" id="L75">        return tasks.values().stream()</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">                .filter(task -&gt; task.getStatus() == status)</span>
+<span class="fc" id="L77">                .collect(Collectors.toList());</span>
+    }
+    
+    /**
+     * Updates an existing task.
+     * 
+     * User Story: US-009 - As a logged-in user, I want to edit an existing task,
+     * so that I can update task details.
+     * 
+     * @param id Task identifier
+     * @param title New title (required)
+     * @param description New description (optional)
+     * @return The updated task
+     * @throws IllegalArgumentException if task not found or validation fails
+     */
+    public Task updateTask(String id, String title, String description) {
+<span class="fc" id="L93">        Task task = tasks.get(id);</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">        if (task == null) {</span>
+<span class="fc" id="L95">            throw new IllegalArgumentException(&quot;Task not found: &quot; + id);</span>
+        }
+        
+<span class="fc" id="L98">        TaskValidator.validateTitle(title);</span>
+<span class="fc" id="L99">        TaskValidator.validateDescription(description);</span>
+        
+<span class="fc" id="L101">        task.setTitle(title);</span>
+<span class="fc" id="L102">        task.setDescription(description);</span>
+        
+<span class="fc" id="L104">        return task;</span>
+    }
+    
+    /**
+     * Updates the status of a task.
+     * 
+     * @param id Task identifier
+     * @param status New status
+     * @return The updated task
+     * @throws IllegalArgumentException if task not found or status is invalid
+     */
+    public Task updateTaskStatus(String id, TaskStatus status) {
+<span class="fc" id="L116">        Task task = tasks.get(id);</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">        if (task == null) {</span>
+<span class="fc" id="L118">            throw new IllegalArgumentException(&quot;Task not found: &quot; + id);</span>
+        }
+        
+<span class="fc" id="L121">        task.setStatus(status);</span>
+<span class="fc" id="L122">        return task;</span>
+    }
+    
+    /**
+     * Marks a task as complete.
+     * 
+     * User Story: US-011 - As a logged-in user, I want to mark a task as complete,
+     * so that I can track my progress.
+     * 
+     * @param id Task identifier
+     * @return The completed task
+     * @throws IllegalArgumentException if task not found
+     */
+    public Task markTaskComplete(String id) {
+<span class="fc" id="L136">        Task task = tasks.get(id);</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">        if (task == null) {</span>
+<span class="fc" id="L138">            throw new IllegalArgumentException(&quot;Task not found: &quot; + id);</span>
+        }
+        
+<span class="fc" id="L141">        task.markComplete();</span>
+<span class="fc" id="L142">        return task;</span>
+    }
+    
+    /**
+     * Deletes a task.
+     * 
+     * User Story: US-010 - As a logged-in user, I want to delete a task,
+     * so that I can remove tasks I no longer need.
+     * 
+     * @param id Task identifier
+     * @return true if task was deleted, false if not found
+     */
+    public boolean deleteTask(String id) {
+<span class="fc bfc" id="L155" title="All 2 branches covered.">        return tasks.remove(id) != null;</span>
+    }
+    
+    /**
+     * Returns the total number of tasks.
+     * 
+     * @return Task count
+     */
+    public int getTaskCount() {
+<span class="fc" id="L164">        return tasks.size();</span>
+    }
+    
+    /**
+     * Clears all tasks (useful for testing).
+     */
+    public void clearAllTasks() {
+<span class="fc" id="L171">        tasks.clear();</span>
+<span class="fc" id="L172">    }</span>
+    
+    /**
+     * Generates a unique task ID.
+     * 
+     * @return Unique ID string
+     */
+    private String generateId() {
+<span class="fc" id="L180">        return &quot;TASK-&quot; + (nextId++);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
