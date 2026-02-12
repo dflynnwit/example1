@@ -101,7 +101,7 @@ Each feature corresponds to a user story from the product backlog:
 ## Test Coverage
 - **Line Coverage**: 95%
 - **Branch Coverage**: 92%
-- **Test Count**: 25+ unit tests
+- **Test Count**: 56 unit tests
 
 ## Class Documentation
 
